@@ -3,6 +3,8 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var passport = require('passport');
+var session = require('express-session');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -18,6 +20,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// passport setup
+app.use(session({ secret: 'MySecret' }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+// place user object into the session
+passport.serializeUser((user, done) => done(null, user.id));
+
+// pull user back of the session
+passport.deserializeUser((userId, done) => done(null, use));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
