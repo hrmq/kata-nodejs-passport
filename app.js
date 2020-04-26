@@ -11,6 +11,19 @@ var usersRouter = require('./routes/users');
 
 var app = express();
 
+// plug passport strategy
+var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+passport.use(
+  new GoogleStrategy({
+    clientID: '',
+    clientSecret: '',
+    callbackURL: '',
+    function(req, accessToken, refreshToken, profile, done) {
+      done(null, profile);
+    },
+  })
+);
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
