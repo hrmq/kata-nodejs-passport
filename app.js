@@ -15,9 +15,9 @@ var app = express();
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 passport.use(
   new GoogleStrategy({
-    clientID: '',
-    clientSecret: '',
-    callbackURL: '',
+    clientID: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    callbackURL: 'http://localhost:3001/auth/google/callback',
     function(req, accessToken, refreshToken, profile, done) {
       done(null, profile);
     },
