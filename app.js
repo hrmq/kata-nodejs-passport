@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var passport = require('passport');
 var session = require('express-session');
+require('dotenv').config();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -15,14 +16,16 @@ var app = express();
 // plug passport strategy
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 passport.use(
-  new GoogleStrategy({
-    clientID: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: 'http://localhost:3001/auth/google/callback',
-    function(req, accessToken, refreshToken, profile, done) {
-      done(null, profile);
+  new GoogleStrategy(
+    {
+      clientID: process.env.CLIENT_ID,
+      clientSecret: process.env.CLIENT_SECRET,
+      callbackURL: 'http://localhost:3001/auth/google/callback',
     },
-  })
+    function (req, accessToken, refreshToken, profile, done) {
+      done(null, profile);
+    }
+  )
 );
 
 // view engine setup
@@ -41,10 +44,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // place user object into the session
-passport.serializeUser((user, done) => done(null, user.id));
+passport.serializeUser((user, done) => done(null, user));
 
 // pull user back of the session
-passport.deserializeUser((userId, done) => done(null, use));
+passport.deserializeUser((user, done) => done(null, user));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -60,6 +63,8 @@ app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  console.log(err);
 
   // render the error page
   res.status(err.status || 500);
