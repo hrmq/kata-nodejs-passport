@@ -1,5 +1,7 @@
 const passport = require('passport');
-var FacebookStrategy = require('passport-facebook').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
+
+const User = require('../../models/userModel');
 
 module.exports = function () {
   passport.use(
@@ -11,15 +13,26 @@ module.exports = function () {
         passReqToCallback: true,
       },
       function (req, accessToken, refreshToken, profile, done) {
-        var user = {};
+        const query = { 'facebook.id': profile.id };
 
-        user.displayName = profile.displayName;
+        User.findOne(query, (err, user) => {
+          if (user) {
+            console.log('user found');
+            done(null, user);
+          } else {
+            console.log('user not found');
+            var user = new User();
 
-        user.facebook = {};
-        user.facebook.id = profile.id;
-        user.facebook.token = accessToken;
+            user.displayName = profile.displayName;
 
-        done(null, user);
+            user.facebook = {};
+            user.facebook.id = profile.id;
+            user.facebook.token = accessToken;
+
+            user.save();
+            done(null, user);
+          }
+        });
       }
     )
   );

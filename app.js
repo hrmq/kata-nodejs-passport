@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
+var mongooe = require('mongoose');
 require('dotenv').config();
 
 var indexRouter = require('./routes/index');
@@ -11,6 +12,7 @@ var usersRouter = require('./routes/users');
 var authRouter = require('./routes/auth');
 
 var app = express();
+var db = mongooe.connect('mongodb://localhost/socailApp');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
