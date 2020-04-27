@@ -10,7 +10,17 @@ module.exports = function () {
         callbackURL: 'http://localhost:3001/auth/google/callback',
       },
       function (req, accessToken, refreshToken, profile, done) {
-        done(null, profile);
+        var user = {};
+
+        user.email = profile.emails[0].value;
+        user.image = profile._json.picture;
+        user.displayName = profile.displayName;
+
+        user.google = {};
+        user.google.id = profile.id;
+        user.google.token = accessToken;
+
+        done(null, user);
       }
     )
   );
