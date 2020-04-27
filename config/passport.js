@@ -13,4 +13,5 @@ module.exports = function (app) {
 
   // plug in strategies
   require('./strategies/google.strategy')();
+  require('./strategies/facebook.strategy')();
 };
